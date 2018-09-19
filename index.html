@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+  </head>
+  <body>
+    <canvas id="canvas" width="500" height="500" style="border: 2px solid black"></canvas>
+    <script src="deeplearn.js"></script>
+    <script src="snakenet.js"></script>
+    <script src="snake.js"></script>
+    <script src="datautils.js"></script>
+    <script src="main.js"></script>
+    <br>
+    <button width="200%" height="200%" onClick="clearInterval(x)">Pause</button>
+    <button width="200%" height="200%" onClick="x = setInterval(function() { snakeGame.step(); }, 100);">Continue</button>
+    <br>
+    <button onClick="startGame(true)" id="playHuman">Human Trainer</button>
+    <button onclick="trainNet()" id="trainNet">Train Net</button>
+    <button onclick="startGame(false)" id="playNeural">Play Net</button>
+    <button onclick="stop()">Stop</button>
+    <br /><br />
+    <label>
+    <button onclick="ge('import').click()">Import</button>
+    <input id="import" type="file" style="position: fixed; top: -100em">
+    </label>
+    <button onclick="exportData()">Export</button>
+    
+    <script src="test.js"></script>
+  </body>
+</html>

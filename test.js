@@ -1,0 +1,1 @@
+document.getElementById('import').addEventListener('change', importData, false);
