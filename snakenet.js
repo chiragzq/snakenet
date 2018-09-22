@@ -30,7 +30,7 @@ function SnakeNet() {
       session.train(
       costTensor,
       feedEntries,
-      10, //batch size
+      300, //batch size
       optimizer,
       dl.CostReduction.NONE
     );
@@ -60,7 +60,7 @@ function SnakeNet() {
   }
   
   let initialLearningRate = 0.06;
-  let netShape = /* 3 */ [1024, 1024, 512, 512, 256, 256, 128, 128, 128]; //3
+  let netShape = /* 3 */ [256]; //3
   const math = dl.ENV.math;
   const graph = new dl.Graph();
   const optimizer = new dl.train.sgd(initialLearningRate);

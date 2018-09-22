@@ -1,12 +1,15 @@
 let canvas = document.getElementById("canvas");
 let ctx = canvas.getContext("2d");
-let humanPlayer = true;
+let player = 0;
 const collectData = true;
+const HUMAN = 0;
+const NEURAL = 1;
+const AI = 2;
 
 function SnakeGame() {
   this.gridWidth = 20;
   this.gridHeight = 20;
-  this.snake = new Snake(this, snakeNet, humanPlayer);
+  this.snake = new Snake(this, snakeNet, snakeAI, player);
   this.food = {x: randomInt(0, this.gridWidth), y: randomInt(0,this.gridHeight)};
   this.data = [];
   this.state;
@@ -19,9 +22,10 @@ function SnakeGame() {
   }
   
   this.step2 = function() {
+    calcDirs(this.snake);
     this.snake.step2(this.food);
-    let target = generateTarget(this.snake, this.snake.currentDirection);
-    if(humanPlayer && collectData) {
+    let target = generateTarget(this.snake.currentDirection);
+    if((player == HUMAN || player == AI) && collectData) {
         this.data.push([this.state, target]);
       //snakeNet.rawInputs.push(features.i);
       //snakeNet.rawTargets.push(features.t);
@@ -48,7 +52,8 @@ function SnakeGame() {
     
   }
 }
-//leftblocked, frontblocked, rightblocked, facingleft, facingRight, facingUp, facingDown, dx(norm), dy(norm);
+
+let snakeAI = new SnakeAI();
 let snakeNet = new SnakeNet();
 let snakeGame = new SnakeGame();
 let interval;
@@ -78,11 +83,12 @@ function draw(snakeGame) {
   
 }
 
-function startGame(human) {
+function startGame(player1) {
   ge("playHuman").disabled = true;
   ge("playNeural").disabled = true;
   ge("trainNet").disabled = true;
-  humanPlayer = human;
+  ge("playNeural").disabled = true;
+  player = player1;
   snakeGame = new SnakeGame();
   interval = setInterval(function() {
     snakeGame.step1();
@@ -90,18 +96,20 @@ function startGame(human) {
       snakeGame.step2();
     }, 50);
   }, 100);
-  console.log("Starting Game: " + human);
+  console.log("Starting Game: " + player);
 }
 
 function trainNet() {
   ge("playHuman").disabled = true;
   ge("playNeural").disabled = true;
   ge("trainNet").disabled = true;
+  ge("playNeural").disabled = true;
   console.log("Training Net");
   snakeNet.train();
   ge("playHuman").disabled = false;
   ge("playNeural").disabled = false;
   ge("trainNet").disabled = false;
+  ge("playNeural").disabled = false;
   console.log("done");
 }
 
@@ -115,6 +123,7 @@ function stop() {
   ge("playHuman").disabled = false;
   ge("playNeural").disabled = false;
   ge("trainNet").disabled = false;
+  ge("playNeural").disabled = false;
   clearInterval(interval);
 }
 
@@ -128,19 +137,22 @@ function loadData() {
   if(!localStorage[key]) {
     console.error("no data");
   } else {
-    /*let data = JSON.parse(localStorage[key]);
-    console.log("Loaded " + data.length + " moves");
+    let data = JSON.parse(localStorage[key]);
+    let totalLoaded = 0;
     for(let i = 0;i < data.length;i ++) {
       //snakeNet.rawInputs.push(data[i].i);
       //snakeNet.rawTargets.push(data[i].t);
-      
-      snakeNet.rawInputs.push(convertStateToFeatures(data[i][0]));
-      snakeNet.rawTargets.push(data[i][1]);
-    }*/
+      if(isUsefulSample(data[i])) {
+        totalLoaded++;
+        snakeNet.rawInputs.push(convertStateToFeatures(data[i][0]));
+        snakeNet.rawTargets.push(data[i][1]);
+      }
+    }
+    console.log("Loaded " + totalLoaded + " moves out of " + data.length + " total moves");
     // [[0, 0, 0], [0, 0, 1], [1, 0, 0], [0, 1, 0], [1, 1, 0], [0, 1, 1]];
     // [[0, 1, 0], [0, 1, 0], [0, 1, 0], [1, 0, 0], [0, 0, 1], [1, 0, 0]];
-    snakeNet.rawInputs = [[0, 0, 1], [1, 0, 0], [0, 1, 0], [1, 1, 0], [0, 1, 1]];
-    snakeNet.rawTargets = [[0, 1, 0], [0, 1, 0], [1, 0, 0], [0, 0, 1], [1, 0, 0]];
+    //snakeNet.rawInputs = [[0, 0, 1], [1, 0, 0], [0, 1, 0], [1, 1, 0], [0, 1, 1]];
+    //snakeNet.rawTargets = [[0, 1, 0], [0, 1, 0], [1, 0, 0], [0, 0, 1], [1, 0, 0]];
   }
 }
 
@@ -180,6 +192,10 @@ function exportData() {
   setTimeout(function() {
             document.body.removeChild(a);
   }, 0);
+}
+
+function killSnake() {
+  snakeGame.snake.currentSpaces[0].x = 4399;
 }
 
 snakeNet.loadData();

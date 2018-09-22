@@ -84,18 +84,26 @@ function generateState(snakeGame) {
   };
 }
 
-function generateTarget(snake, dir) {
+let frontDir;
+let leftDir;
+let rightDir;
+
+function calcDirs(snake) {
+  frontDir = (snake.getNeckDirection() + 2) % 4;
+  leftDir = (frontDir + 3) % 4;
+  rightDir = (frontDir + 1) % 4;
+}
+
+function generateTarget(dir) {
   let target = [0, 0, 0];
-  let frontDirection = (snake.getNeckDirection() + 2) % 4;
-  let leftDirection = (frontDirection + 3) % 4;
-  let rightDirection = (frontDirection + 1) % 4;
-  let leftSpace = getNewSpace(snake.currentSpaces[0], leftDirection);
-  let frontSpace = getNewSpace(snake.currentSpaces[0], frontDirection);
-  let rightSpace = getNewSpace(snake.currentSpaces[0], rightDirection);
   
-  target[0] = dir == leftDirection ? 1 : 0;
-  target[1] = dir == frontDirection ? 1 : 0;
-  target[2] = dir == rightDirection ? 1 : 0;
+  //let leftSpace = getNewSpace(snake.currentSpaces[0], leftDirection);
+  //let frontSpace = getNewSpace(snake.currentSpaces[0], frontDirection);
+  //let rightSpace = getNewSpace(snake.currentSpaces[0], rightDirection);
+  
+  target[0] = dir == leftDir ? 1 : 0;
+  target[1] = dir == frontDir ? 1 : 0;
+  target[2] = dir == rightDir ? 1 : 0;
   return target;
 }
 
@@ -163,4 +171,13 @@ function getNeckDirection(spaces) {
   if(spaces[0].y < spaces[1].y) return DOWN;
   if(spaces[0].x > spaces[1].x) return LEFT;
   throw "Bad Neck " + spaces;
+}
+
+function isUsefulSample(data) {
+  let state = data[0];
+  let features = convertStateToFeatures(state);
+  if(!(features[0] || features[1] || features[2])) {
+    return Math.random() > 0.9;
+  }
+  return true;
 }

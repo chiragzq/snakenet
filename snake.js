@@ -12,7 +12,7 @@ function randomInt(min, max) {
 const UP = 0, RIGHT = 1, DOWN = 2, LEFT = 3;
 const SCALE = 20;
 
-function Snake(snakeGame, snakeNet, humanPlayer) {
+function Snake(snakeGame, snakeNet, snakeAI, player) {
   this.size = 5;
   this.currentSpaces = [];
   this.currentDirection = 2;
@@ -52,7 +52,13 @@ function Snake(snakeGame, snakeNet, humanPlayer) {
   
   let dir;
   this.step1 = function(state) {
-    dir = humanPlayer ? this.selectDirection() : this.selectDirectionNet(state);
+    if(player == HUMAN) {
+      dir = this.selectDirection();
+    } else if(player == NEURAL) {
+      dir = this.selectDirectionNet(state);
+    } else if(player == AI) {
+      dir = this.selectDirectionAI(state);
+    }
     let ndir = this.selectDirectionNet(state);
     this.currentDirection = dir;
     return [getNewSpace(this.currentSpaces[0], dir), getNewSpace(this.currentSpaces[0], ndir)];
@@ -148,19 +154,11 @@ function Snake(snakeGame, snakeNet, humanPlayer) {
     return ret;
   }
   
-  this.generateFullTrainingData = function(dir, food) {
-    
-  }
-  
-  this.compressState = function() {
-    let vertices = [];
-    this.currentSpaces.forEach((node) => {
-      
-    });
-  }
-  
-  this.expandState = function(state) {
-    
+  this.selectDirectionAI = function(state) {
+    let spaces = expandSpaces(state.s);
+    let dir = snakeAI.selectDirection(spaces, state.f);
+    let ret = (this.currentDirection + dir + 3) % 4;
+    return ret;
   }
 }
 
