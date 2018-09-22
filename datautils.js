@@ -1,4 +1,3 @@
-const numFeatures = 3;
 /**
  * Converts a list of spaces into a list of vertices
  * @param spaces this list of spaces to compress
@@ -96,11 +95,6 @@ function calcDirs(snake) {
 
 function generateTarget(dir) {
   let target = [0, 0, 0];
-  
-  //let leftSpace = getNewSpace(snake.currentSpaces[0], leftDirection);
-  //let frontSpace = getNewSpace(snake.currentSpaces[0], frontDirection);
-  //let rightSpace = getNewSpace(snake.currentSpaces[0], rightDirection);
-  
   target[0] = dir == leftDir ? 1 : 0;
   target[1] = dir == frontDir ? 1 : 0;
   target[2] = dir == rightDir ? 1 : 0;
@@ -115,6 +109,7 @@ function getNewSpace(square, direction) {
   };
 }
 
+const numFeatures = 5;
 //leftblocked, frontblocked, rightblocked, dx, dy
 function convertStateToFeatures(state) {
   let data = [];
@@ -141,7 +136,7 @@ function convertStateToFeatures(state) {
   if(leftSpace.x < 0 || leftSpace.y < 0 || leftSpace.y >= snakeGame.gridHeight || leftSpace.x >= snakeGame.gridWidth) data[0] = 1;
   if(rightSpace.x < 0 || rightSpace.y < 0 || rightSpace.y >= snakeGame.gridHeight || rightSpace.x >= snakeGame.gridWidth) data[2] = 1;
   
-  /*let dx = state.f.x - spaces[0].x;
+  let dx = state.f.x - spaces[0].x;
   let dy = state.f.y - spaces[0].y;
   switch(getNeckDirection(spaces)) {
     case UP:
@@ -160,7 +155,7 @@ function convertStateToFeatures(state) {
       data[3] =  dy / SCALE;
       data[4] =  dx / SCALE;
       break;
-  }*/
+  }
   
   return data;
 }
@@ -175,9 +170,9 @@ function getNeckDirection(spaces) {
 
 function isUsefulSample(data) {
   let state = data[0];
-  let features = convertStateToFeatures(state);
-  if(!(features[0] || features[1] || features[2])) {
-    return Math.random() > 0.9;
+  let target = data[1];
+  if (target[0] || target[2]) {
+    return true;
   }
-  return true;
+  return Math.random() < 0.2;
 }

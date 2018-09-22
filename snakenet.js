@@ -8,7 +8,8 @@ function makeConnectedLayer(graph, inputLayer, index, nodes) {
 }
 
 function SnakeNet() {
-  const iterations = 50;
+  const iterations = 15;
+  const batchSize = 300;
   this.rawInputs = [];
   this.rawTargets = []
   
@@ -26,11 +27,11 @@ function SnakeNet() {
       {tensor: inputTensor, data: inputProvider},
       {tensor: targetTensor, data: targetProvider}
     ];
-    for(let i = 0;i < iterations;i ++) {
+    for(let i = 0; i < iterations; i++) {
       session.train(
       costTensor,
       feedEntries,
-      300, //batch size
+      batchSize,
       optimizer,
       dl.CostReduction.NONE
     );
@@ -56,11 +57,11 @@ function SnakeNet() {
         index = i;
       }
     }
-    return index;
+   return index;
   }
   
   let initialLearningRate = 0.06;
-  let netShape = /* 3 */ [256]; //3
+  let netShape = /* 3 */ [32]; //3
   const math = dl.ENV.math;
   const graph = new dl.Graph();
   const optimizer = new dl.train.sgd(initialLearningRate);

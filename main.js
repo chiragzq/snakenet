@@ -17,8 +17,8 @@ function SnakeGame() {
   this.step1 = function() {
     this.state = generateState(this);
     let square = this.snake.step1(this.state);
-    ctx.fillStyle = "blue";
-    ctx.fillRect(squareSize * square[1].x, squareSize * square[1].y, squareSize, squareSize);
+    //ctx.fillStyle = "blue";
+    //ctx.fillRect(squareSize * square[1].x, squareSize * square[1].y, squareSize, squareSize);
   }
   
   this.step2 = function() {
@@ -140,8 +140,6 @@ function loadData() {
     let data = JSON.parse(localStorage[key]);
     let totalLoaded = 0;
     for(let i = 0;i < data.length;i ++) {
-      //snakeNet.rawInputs.push(data[i].i);
-      //snakeNet.rawTargets.push(data[i].t);
       if(isUsefulSample(data[i])) {
         totalLoaded++;
         snakeNet.rawInputs.push(convertStateToFeatures(data[i][0]));

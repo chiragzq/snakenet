@@ -146,14 +146,12 @@ function Snake(snakeGame, snakeNet, snakeAI, player) {
     return data;
   }
   
-  //leftblocked, frontblocked, rightblocked, facingleft, facingRight, facingUp, facingDown, dx(norm), dy(norm);
-  
   this.selectDirectionNet = function(state) {
     let dir = snakeNet.selectDirection(convertStateToFeatures(state));
     let ret = (this.currentDirection + dir + 3) % 4;
     return ret;
   }
-  
+
   this.selectDirectionAI = function(state) {
     let spaces = expandSpaces(state.s);
     let dir = snakeAI.selectDirection(spaces, state.f);
