@@ -140,27 +140,10 @@ function Snake(snakeGame, snakeNet, humanPlayer) {
     return data;
   }
   
-  //leftblocked, frontblocked, rightblocked, facingleft, facingRight, facingUp, facingDown, dx(norm), dy(norm);
-  
   this.selectDirectionNet = function(state) {
     let dir = snakeNet.selectDirection(convertStateToFeatures(state));
     let ret = (this.currentDirection + dir + 3) % 4;
     return ret;
-  }
-  
-  this.generateFullTrainingData = function(dir, food) {
-    
-  }
-  
-  this.compressState = function() {
-    let vertices = [];
-    this.currentSpaces.forEach((node) => {
-      
-    });
-  }
-  
-  this.expandState = function(state) {
-    
   }
 }
 

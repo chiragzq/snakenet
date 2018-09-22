@@ -14,13 +14,14 @@ function SnakeGame() {
   this.step1 = function() {
     this.state = generateState(this);
     let square = this.snake.step1(this.state);
-    ctx.fillStyle = "blue";
-    ctx.fillRect(squareSize * square[1].x, squareSize * square[1].y, squareSize, squareSize);
+    //ctx.fillStyle = "blue";
+    //ctx.fillRect(squareSize * square[1].x, squareSize * square[1].y, squareSize, squareSize);
   }
   
   this.step2 = function() {
+    calcDirs(this.snake);
     this.snake.step2(this.food);
-    let target = generateTarget(this.snake, this.snake.currentDirection);
+    let target = generateTarget(this.snake.currentDirection);
     if(humanPlayer && collectData) {
         this.data.push([this.state, target]);
       //snakeNet.rawInputs.push(features.i);
@@ -128,19 +129,17 @@ function loadData() {
   if(!localStorage[key]) {
     console.error("no data");
   } else {
-    /*let data = JSON.parse(localStorage[key]);
+    let data = JSON.parse(localStorage[key]);
+    let useful = 0;
     console.log("Loaded " + data.length + " moves");
     for(let i = 0;i < data.length;i ++) {
-      //snakeNet.rawInputs.push(data[i].i);
-      //snakeNet.rawTargets.push(data[i].t);
-      
-      snakeNet.rawInputs.push(convertStateToFeatures(data[i][0]));
-      snakeNet.rawTargets.push(data[i][1]);
-    }*/
-    // [[0, 0, 0], [0, 0, 1], [1, 0, 0], [0, 1, 0], [1, 1, 0], [0, 1, 1]];
-    // [[0, 1, 0], [0, 1, 0], [0, 1, 0], [1, 0, 0], [0, 0, 1], [1, 0, 0]];
-    snakeNet.rawInputs = [[0, 0, 1], [1, 0, 0], [0, 1, 0], [1, 1, 0], [0, 1, 1]];
-    snakeNet.rawTargets = [[0, 1, 0], [0, 1, 0], [1, 0, 0], [0, 0, 1], [1, 0, 0]];
+      if (isUsefulSample(data[i])) {
+        snakeNet.rawInputs.push(convertStateToFeatures(data[i][0]));
+        snakeNet.rawTargets.push(data[i][1]);  
+        useful++;
+      }
+    }
+    console.log("Kept " + useful + " moves");
   }
 }
 
