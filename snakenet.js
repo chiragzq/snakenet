@@ -8,7 +8,7 @@ function makeConnectedLayer(graph, inputLayer, index, nodes) {
 }
 
 function SnakeNet() {
-  const iterations = 15;
+  const iterations = 50;
   const batchSize = 300;
   this.rawInputs = [];
   this.rawTargets = []
