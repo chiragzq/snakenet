@@ -51,15 +51,15 @@ function Snake(snakeGame, snakeNet, snakeAI, player) {
   }
   
   let dir;
-  this.step1 = function(state) {
+  this.step1 = function(state, features) {
+    let ndir = this.selectDirectionNet(features);
     if(player == HUMAN) {
       dir = this.selectDirection();
     } else if(player == NEURAL) {
-      dir = this.selectDirectionNet(state);
+      dir = ndir;
     } else if(player == AI) {
       dir = this.selectDirectionAI(state);
     }
-    let ndir = this.selectDirectionNet(state);
     this.currentDirection = dir;
     return [getNewSpace(this.currentSpaces[0], dir), getNewSpace(this.currentSpaces[0], ndir)];
   }
@@ -102,52 +102,9 @@ function Snake(snakeGame, snakeNet, snakeAI, player) {
   }
   
   //leftblocked, frontblocked, rightblocked, dh(norm), dv(norm);
-  this.generateFeatures = function(food) {
-    let data = [0, 0, 0, 0, 0];
-    let frontDirection = (this.getNeckDirection() + 2) % 4;
-    let leftDirection = (frontDirection + 3) % 4;
-    let rightDirection = (frontDirection + 1) % 4;
-    let leftSpace = getNewSpace(this.currentSpaces[0], leftDirection);
-    let frontSpace = getNewSpace(this.currentSpaces[0], frontDirection);
-    let rightSpace = getNewSpace(this.currentSpaces[0], rightDirection);
-    
-    this.currentSpaces.forEach((space) => {
-      if(space.x == leftSpace.x && space.y == leftSpace.y) data[0] = 1;
-      if(space.x == frontSpace.x && space.y == frontSpace.y) data[1] = 1;
-      if(space.x == rightSpace.x && space.y == rightSpace.y) data[2] = 1;
-    });
-
-    
-    if(frontSpace.x < 0 || frontSpace.y < 0 || frontSpace.y >= snakeGame.gridHeight || frontSpace.x >= snakeGame.gridWidth) data[1] = 1;
-    if(leftSpace.x < 0 || leftSpace.y < 0 || leftSpace.y >= snakeGame.gridHeight || leftSpace.x >= snakeGame.gridWidth) data[0] = 1;
-    if(rightSpace.x < 0 || rightSpace.y < 0 || rightSpace.y >= snakeGame.gridHeight || rightSpace.x >= snakeGame.gridWidth) data[2] = 1;
-    
-    let dx = food.x - this.currentSpaces[0].x;
-    let dy = food.y - this.currentSpaces[0].y;
-    switch(this.currentDirection) {
-      case UP:
-        data[3] = dx / SCALE;
-        data[4] = -dy / SCALE;
-        break;
-      case DOWN:
-        data[3] = -dx / SCALE;
-        data[4] = dy / SCALE;
-        break;
-      case LEFT:
-        data[3] = -dy / SCALE;
-        data[4] = dx / SCALE;
-        break;
-      case RIGHT:
-        data[3] =  dy / SCALE;
-        data[4] =  dx / SCALE;
-        break;
-    }
-    
-    return data;
-  }
   
-  this.selectDirectionNet = function(state) {
-    let dir = snakeNet.selectDirection(convertStateToFeatures(state));
+  this.selectDirectionNet = function(features) {
+    let dir = snakeNet.selectDirection(features);
     let ret = (this.currentDirection + dir + 3) % 4;
     return ret;
   }

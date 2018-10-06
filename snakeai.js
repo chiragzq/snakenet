@@ -78,10 +78,16 @@ function SnakeAI() {
       if(space.x == food.x && space.y == food.y) {
         let path = [space];
         while(!this.equals(p[space.x][space.y], space)) {
-          
+          space = p[space.x][space.y];
+          path.push(space);
         }
+        return path;
       }
+      
+      visited[space.x][space.y] = true;
+      
     }
+    return [];
   }
   
   this.leftBlocked = function(spaces) {

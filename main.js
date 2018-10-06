@@ -2,6 +2,7 @@ let canvas = document.getElementById("canvas");
 let ctx = canvas.getContext("2d");
 let player = 0;
 const collectData = false;
+const DEBUG_NET = false
 const HUMAN = 0;
 const NEURAL = 1;
 const AI = 2;
@@ -16,9 +17,13 @@ function SnakeGame() {
   
   this.step1 = function() {
     this.state = generateState(this);
-    let square = this.snake.step1(this.state);
-    //ctx.fillStyle = "blue";
-    //ctx.fillRect(squareSize * square[1].x, squareSize * square[1].y, squareSize, squareSize);
+    let features = convertStateToFeatures(this.state);
+    updateParamDisplay(features);
+    let square = this.snake.step1(this.state, features);
+    if(DEBUG_NET) {
+      ctx.fillStyle = "blue";
+      ctx.fillRect(squareSize * square[1].x, squareSize * square[1].y, squareSize, squareSize);
+    }
   }
   
   this.step2 = function() {
@@ -32,7 +37,22 @@ function SnakeGame() {
     }
     
     if(this.snake.hitFood(this.food)) {
-      this.food = {x: randomInt(0, this.gridWidth), y: randomInt(0, this.gridHeight)};
+      if(this.snake.currentSpaces.length > 200) {
+        let validSpaces = [];
+        for(let i = 0;i < this.gridWidth;i ++) {
+          for(let j = 0;j < this.gridHeight;j ++) {
+            if(valid({x: i, y: j}, this.snake.currentSpaces)) {
+              validSpaces.push({x: i, y: j});
+            }
+          }
+        }
+        this.food = validSpaces[randomInt(0, validSpaces.length)];
+      } else {
+        this.food = {x: randomInt(0, this.gridWidth),y: randomInt(0, this.gridHeight)};
+        while(!valid(this.food, this.snake.currentSpaces)) {
+         this.food = {x: randomInt(0, this.gridWidth),y: randomInt(0, this.gridHeight)};
+        }
+      }
       this.snake.grow(3);
     }
     
@@ -49,7 +69,6 @@ function SnakeGame() {
     else {
       draw(this);
     }
-    
   }
 }
 
@@ -152,6 +171,19 @@ function loadData() {
     //snakeNet.rawInputs = [[0, 0, 1], [1, 0, 0], [0, 1, 0], [1, 1, 0], [0, 1, 1]];
     //snakeNet.rawTargets = [[0, 1, 0], [0, 1, 0], [1, 0, 0], [0, 0, 1], [1, 0, 0]];
   }
+}
+
+
+function valid(space, spaces) {
+  if(space.x < 0 || space.x > 20 || space.y < 0 || space.y > 20) {
+    return false;
+  }
+  for(let i = 0;i < spaces.length;i ++) {
+    if(space.x == spaces[i].x && space.y == spaces[i].y) {
+      return false;
+    }
+  }
+  return true;
 }
 
 function saveData(data) {
