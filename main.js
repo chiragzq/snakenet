@@ -1,8 +1,9 @@
 let canvas = document.getElementById("canvas");
 let ctx = canvas.getContext("2d");
 let player = 0;
+let DEBUG_NET = false;
+let DRAW_SPATH = false;
 const collectData = false;
-const DEBUG_NET = false
 const HUMAN = 0;
 const NEURAL = 1;
 const AI = 2;
@@ -23,6 +24,10 @@ function SnakeGame() {
     if(DEBUG_NET) {
       ctx.fillStyle = "blue";
       ctx.fillRect(squareSize * square[1].x, squareSize * square[1].y, squareSize, squareSize);
+    }
+    
+    if(DRAW_SPATH) {
+      snakeAI.drawShortestPath(this.state.s, this.food);
     }
   }
   
@@ -125,11 +130,6 @@ function trainNet() {
   ge("playNeural").disabled = true;
   console.log("Training Net");
   snakeNet.train();
-  ge("playHuman").disabled = false;
-  ge("playNeural").disabled = false;
-  ge("trainNet").disabled = false;
-  ge("playNeural").disabled = false;
-  console.log("done");
 }
 
 function clearTrainingData() {
@@ -175,7 +175,7 @@ function loadData() {
 
 
 function valid(space, spaces) {
-  if(space.x < 0 || space.x > 20 || space.y < 0 || space.y > 20) {
+  if(space.x < 0 || space.x >= 20 || space.y < 0 || space.y >= 20) {
     return false;
   }
   for(let i = 0;i < spaces.length;i ++) {

@@ -1,8 +1,12 @@
+let dx = [0, 1, 0, -1];
+let dy = [-1, 0, 1, 0];
+
 function SnakeAI() {
   this.selectDirection = function(spaces, food) {
     let leftBlocked = this.leftBlocked(spaces);
     let frontBlocked = this.frontBlocked(spaces);
     let rightBlocked = this.rightBlocked(spaces);
+    
     if(!(frontBlocked || rightBlocked || leftBlocked)) {
       console.log("no blocked");
       let dx = food.x - spaces[0].x;
@@ -84,8 +88,14 @@ function SnakeAI() {
         return path;
       }
       
-      visited[space.x][space.y] = true;
-      
+      for(let i = 0;i < 4;i ++) {
+        let newSpace = {x: space.x + dx[i], y: space.y + dy[i]};
+        if(valid(newSpace, spaces) && !visited[newSpace.x][newSpace.y]) {
+          p[newSpace.x][newSpace.y] = space;
+          visited[newSpace.x][newSpace.y] = true;
+          queue.push(newSpace);
+        }
+      }
     }
     return [];
   }
@@ -138,5 +148,13 @@ function SnakeAI() {
   
   this.equals = function(space1, space2) {
     return space1.x == space2.x && space1.y == space2.y;
+  }
+  
+  this.drawShortestPath = function(spaces, food) {
+    let bfs = this.bfs(spaces, food);
+    ctx.fillStyle = "green";
+    bfs.forEach((square) => {
+      ctx.fillRect(squareSize * square.x, squareSize * square.y, squareSize, squareSize);
+    });
   }
 }

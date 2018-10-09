@@ -7,6 +7,24 @@ function makeConnectedLayer(graph, inputLayer, index, nodes) {
   );
 }
 
+function doTraining(fun, times) {
+  let count = 1;
+  let fun2 = () => {
+    fun();
+    if(count++ < times) {
+      ge("trainProg").value = count;
+      setTimeout(fun2, 5);
+    } else {
+      console.log("done");
+      ge("playHuman").disabled = false;
+      ge("playNeural").disabled = false;
+      ge("trainNet").disabled = false;
+      ge("playNeural").disabled = false;
+    }
+  }
+  fun2();
+}
+
 function SnakeNet() {
   const iterations = 50;
   const batchSize = 300;
@@ -16,6 +34,7 @@ function SnakeNet() {
   this.loadData = function() {
     loadData();
   }
+  
   this.train = function() {
     console.log("Training with " + this.rawInputs.length + " samples with " + iterations + " iterations");
     const inputArray= this.rawInputs.map(c => dl.tensor1d(c));
@@ -27,16 +46,16 @@ function SnakeNet() {
       {tensor: inputTensor, data: inputProvider},
       {tensor: targetTensor, data: targetProvider}
     ];
-    for(let i = 0; i < iterations; i++) {
+    doTraining(function() {
       session.train(
       costTensor,
       feedEntries,
       batchSize,
       optimizer,
-      dl.CostReduction.NONE
-    );
-    }
+      dl.CostReduction.NONE);
+    }, iterations);
   }
+
   
   this.selectDirection = function(input) {
     const mapping = [{
