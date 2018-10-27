@@ -3,3 +3,7 @@ function updateParamDisplay(features) {
     document.getElementById("param" + i).innerHTML = features[i];
   }
 }
+
+function updateScore(score) {
+  document.getElementById("score").innerHTML = score;
+}

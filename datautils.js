@@ -109,7 +109,7 @@ function getNewSpace(square, direction) {
   };
 }
 
-const numFeatures = 5;
+const numFeatures = 4;
 //leftblocked, frontblocked, rightblocked, dx, dy
 function convertStateToFeatures(state) {
   let data = [];
@@ -138,7 +138,7 @@ function convertStateToFeatures(state) {
   
   let dx = state.f.x - spaces[0].x;
   let dy = state.f.y - spaces[0].y;
-  switch(getNeckDirection(spaces)) {
+  /*switch(getNeckDirection(spaces)) {
     case UP:
       data[3] = dx / SCALE;
       data[4] = -dy / SCALE;
@@ -155,8 +155,15 @@ function convertStateToFeatures(state) {
       data[3] =  dy / SCALE;
       data[4] =  dx / SCALE;
       break;
-  }
+  }*/
   
+  let angle = 180 * Math.atan2(state.f.y - spaces[0].y, state.f.x - spaces[0].x) / Math.PI;
+  let frontAngle = new Array(-90, 0, 90, 180)[frontDirection];
+  let turnAngle = (frontAngle - angle) / 180;
+  if(turnAngle <= -1) turnAngle += 2;
+  if(turnAngle > 1) turnAngle -= 2;
+  
+  data[3] = turnAngle;
   return data;
 }
 

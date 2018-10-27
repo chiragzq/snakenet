@@ -3,11 +3,11 @@ let ctx = canvas.getContext("2d");
 let player = 0;
 let DEBUG_NET = false;
 let DRAW_SPATH = false;
-const collectData = false;
+const collectData = true;
 const HUMAN = 0;
 const NEURAL = 1;
 const AI = 2;
-const GAME_INTERVAL = 200;
+let GAME_INTERVAL = 100;
 
 function SnakeGame() {
   this.gridWidth = 20;
@@ -20,16 +20,14 @@ function SnakeGame() {
   this.step1 = function() {
     this.state = generateState(this);
     let features = convertStateToFeatures(this.state);
-    console.log(features[3], features[4]);
-    console.log(180 * Math.atan2(features[3], -features[4]) / Math.PI);
-    ctx.fillStyle = "blue";
-    let x1 = 20 *this.snake.currentSpaces[0].x;
-    let y1 = 20 *this.snake.currentSpaces[0].y;
-    let theta = Math.atan2(features[3], -features[4]);
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x1 + 100*Math.cos(theta), y1 + 100 * Math.sin(theta));
-    ctx.stroke();
-
+    let angle = 180 * Math.atan2(this.food.y - this.snake.currentSpaces[0].y, this.food.x - this.snake.currentSpaces[0].x) / Math.PI;
+    let frontAngle = new Array(-90, 0, 90, 180)[(getNeckDirection(this.snake.currentSpaces)+2)%4];
+    let turnAngle = (frontAngle - angle) / 1;
+    if(turnAngle <= -180) turnAngle += 360;
+    if(turnAngle > 180) turnAngle -= 360;
+    console.log(turnAngle);
+    
+    
     updateParamDisplay(features);
     let square = this.snake.step1(this.state, features);
     if(DEBUG_NET) {
@@ -40,6 +38,7 @@ function SnakeGame() {
     if(DRAW_SPATH) {
       snakeAI.drawShortestPath(this.state.s, this.food);
     }
+    updateScore(this.snake.currentSpaces.length);
   }
   
   this.step2 = function() {
@@ -69,7 +68,7 @@ function SnakeGame() {
          this.food = {x: randomInt(0, this.gridWidth),y: randomInt(0, this.gridHeight)};
         }
       }
-      this.snake.grow(3);
+      this.snake.grow(30);
     }
     
     if(this.snake.isDead()) {
@@ -239,6 +238,8 @@ function exportData() {
 function killSnake() {
   snakeGame.snake.currentSpaces[0].x = 4399;
 }
+
+
 
 snakeNet.loadData();
 
