@@ -3,10 +3,12 @@ let ctx = canvas.getContext("2d");
 let player = 0;
 let DEBUG_NET = false;
 let DRAW_SPATH = false;
-const collectData = false;
+const collectData = true;
 const HUMAN = 0;
 const NEURAL = 1;
 const AI = 2;
+const GAME_INTERVAL = 25;
+
 
 function SnakeGame() {
   this.gridWidth = 20;
@@ -66,6 +68,7 @@ function SnakeGame() {
       saveData(this.data);
       console.log("added " + this.data.length + " moves");
       clearInterval(interval);
+      interval = null;
       ge("playHuman").disabled = false;
       ge("playNeural").disabled = false;
       ge("trainNet").disabled = false;
@@ -118,8 +121,8 @@ function startGame(player1) {
     snakeGame.step1();
     setTimeout(function() {
       snakeGame.step2();
-    }, 50);
-  }, 100);
+    }, GAME_INTERVAL/2);
+  }, GAME_INTERVAL);
   console.log("Starting Game: " + player);
 }
 

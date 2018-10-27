@@ -3,64 +3,31 @@ let dy = [-1, 0, 1, 0];
 
 function SnakeAI() {
   this.selectDirection = function(spaces, food) {
-    let leftBlocked = this.leftBlocked(spaces);
-    let frontBlocked = this.frontBlocked(spaces);
-    let rightBlocked = this.rightBlocked(spaces);
+    let leftSpace = getNewSpace(spaces[0], (this.getCurrentDirection(spaces) + 3) % 4);
+    let frontSpace = getNewSpace(spaces[0], this.getCurrentDirection(spaces));
+    let rightSpace = getNewSpace(spaces[0], (this.getCurrentDirection(spaces) + 1) % 4);
+    let bfs = this.bfs(spaces, food);
     
-    if(!(frontBlocked || rightBlocked || leftBlocked)) {
-      console.log("no blocked");
-      let dx = food.x - spaces[0].x;
-      let dy = food.y - spaces[0].y;
-      switch(getNeckDirection(spaces)) {
-        case DOWN:
-          dy = -dy;
-          break;
-        case UP:
-          dx = -dx;
-          break;
-        case RIGHT:
-          dy = -dy;
-          break;
-      }
-      console.log(dx + " " + dy);
-      if(dx == 0) {
-        return 1;
-      }
-      if(dy <= 0) {
-        if(dx > 0) {
-          return 2;
-        }
-        return 0;
-      }
-      if(dy < Math.abs(dx)) {
-        if(dx > 0) {
+    if(bfs.length == 0) {
+      let leftBlocked = this.leftBlocked(spaces);
+      let frontBlocked = this.frontBlocked(spaces);
+      let rightBlocked = this.rightBlocked(spaces);
+      if(frontBlocked) {
+        if(leftBlocked) {
           return 2;
         }
         return 0;
       }
       return 1;
     }
-    if(frontBlocked) {
-      if(leftBlocked) {
-        return 2;
-      } else {
-        return 0;
-      }
-    } else {
-      if(!rightBlocked) {
-        if(Math.random() > 0.5) {
-          return 2;
-        }
-        return 1
-      }
-      if(!leftBlocked) {
-        if(Math.random() > 0.5) {
-          return 0;
-        }
-        return 1;
-      }
-      return 1;
+
+    if(this.equals(bfs[1], leftSpace)) {
+      return 0;
     }
+    if(this.equals(bfs[1], rightSpace)) {
+      return 2;
+    }
+    return 1;
   }
   
   this.bfs = function(spaces, food) {
@@ -85,7 +52,7 @@ function SnakeAI() {
           space = p[space.x][space.y];
           path.push(space);
         }
-        return path;
+        return path.reverse();
       }
       
       for(let i = 0;i < 4;i ++) {
