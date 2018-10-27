@@ -3,12 +3,11 @@ let ctx = canvas.getContext("2d");
 let player = 0;
 let DEBUG_NET = false;
 let DRAW_SPATH = false;
-const collectData = true;
+const collectData = false;
 const HUMAN = 0;
 const NEURAL = 1;
 const AI = 2;
-const GAME_INTERVAL = 25;
-
+const GAME_INTERVAL = 200;
 
 function SnakeGame() {
   this.gridWidth = 20;
@@ -21,6 +20,16 @@ function SnakeGame() {
   this.step1 = function() {
     this.state = generateState(this);
     let features = convertStateToFeatures(this.state);
+    console.log(features[3], features[4]);
+    console.log(180 * Math.atan2(features[3], -features[4]) / Math.PI);
+    ctx.fillStyle = "blue";
+    let x1 = 20 *this.snake.currentSpaces[0].x;
+    let y1 = 20 *this.snake.currentSpaces[0].y;
+    let theta = Math.atan2(features[3], -features[4]);
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x1 + 100*Math.cos(theta), y1 + 100 * Math.sin(theta));
+    ctx.stroke();
+
     updateParamDisplay(features);
     let square = this.snake.step1(this.state, features);
     if(DEBUG_NET) {
