@@ -26,7 +26,7 @@ function doTraining(fun, times) {
 }
 
 function SnakeNet() {
-  const iterations = 50;
+  const iterations = 500;
   const batchSize = 300;
   this.rawInputs = [];
   this.rawTargets = []
