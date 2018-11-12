@@ -7,7 +7,7 @@ const collectData = true;
 const HUMAN = 0;
 const NEURAL = 1;
 const AI = 2;
-let GAME_INTERVAL = 100;
+let GAME_INTERVAL = 50;
 
 function SnakeGame() {
   this.gridWidth = 20;
@@ -68,7 +68,7 @@ function SnakeGame() {
          this.food = {x: randomInt(0, this.gridWidth),y: randomInt(0, this.gridHeight)};
         }
       }
-      this.snake.grow(30);
+      this.snake.grow(3);
     }
     
     if(this.snake.isDead()) {
