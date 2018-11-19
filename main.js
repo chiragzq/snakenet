@@ -20,12 +20,6 @@ function SnakeGame() {
   this.step1 = function() {
     this.state = generateState(this);
     let features = convertStateToFeatures(this.state);
-    let angle = 180 * Math.atan2(this.food.y - this.snake.currentSpaces[0].y, this.food.x - this.snake.currentSpaces[0].x) / Math.PI;
-    let frontAngle = new Array(-90, 0, 90, 180)[(getNeckDirection(this.snake.currentSpaces)+2)%4];
-    let turnAngle = (frontAngle - angle) / 1;
-    if(turnAngle <= -180) turnAngle += 360;
-    if(turnAngle > 180) turnAngle -= 360;
-    console.log(turnAngle);
     
     
     updateParamDisplay(features);
