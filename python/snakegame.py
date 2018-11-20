@@ -16,12 +16,13 @@ class Snakegame:
     def step1(self):
         square = self.snake.step1()
     
-    def step2(self):
+    def step2(self, gridWidth, gridHeight):
         self.snake.step2()
-        if(self.snake.hitFood(self.food)):
+        if self.snake.hitFood(self.food):
             self.food = Space(randint(0, self.gridWidth - 1), randint(0, self.gridHeight - 1))
-        if(self.snake.isDead()):
-            alive = False
+            self.snake.fat(3)
+        if self.snake.isDead(gridWidth, gridHeight):
+            self.alive = False
     
     def draw(self, screen, squareSize):
         for space in self.snake.spaces:

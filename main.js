@@ -37,7 +37,7 @@ function SnakeGame() {
   
   this.step2 = function() {
     calcDirs(this.snake);
-    this.snake.step2(this.food);
+    this.snake.step2();
     let target = generateTarget(this.snake.currentDirection);
     if((player == HUMAN || player == AI) && collectData) {
         this.data.push([this.state, target]);

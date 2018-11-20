@@ -64,7 +64,7 @@ function Snake(snakeGame, snakeNet, snakeAI, player) {
     return [getNewSpace(this.currentSpaces[0], dir), getNewSpace(this.currentSpaces[0], ndir)];
   }
 
-  this.step2 = function(food) {
+  this.step2 = function() {
     if(!this.growAmount) {
       let temp = getNewSpace(this.currentSpaces[0], dir);
       for(let i = this.currentSpaces.length - 2;i >= 0;i --) {
