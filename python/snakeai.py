@@ -9,8 +9,8 @@ class SnakeAI:
         bfs = self.bfs(spaces, food)
 
         if len(bfs) == 0:
-            leftBlocked = self.valid(leftSpace, spaces)
-            frontBlocked = self.valid(frontSpace, spaces)
+            leftBlocked = not self.valid(leftSpace, spaces)
+            frontBlocked = not self.valid(frontSpace, spaces)
             #rightBlocked = self.contains(rightSpace, spaces)
             if frontBlocked:
                 if leftBlocked:

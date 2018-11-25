@@ -55,7 +55,6 @@ def main():
             drawGame(screen, snakeGame)
             if not snakeGame.alive:
                 stopGame()
-                startGame(Player.AI)
             drawUI(screen)
         pygame.display.flip()
         time.sleep(GAME_INTERVAL / 2 / 1000.0)

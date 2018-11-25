@@ -19,7 +19,6 @@ class Snakegame:
         self.state = generateState(self.snake.spaces, self.food)
         features = convertStateToFeatures(self.state)
         square = self.snake.step1(self.state, features)
-        self.n = square[1]
     
     def step2(self, gridWidth, gridHeight):
         oldDir = self.snake.direction
@@ -45,7 +44,6 @@ class Snakegame:
 
     
     def draw(self, screen, squareSize):
-        pygame.draw.rect(screen, Color.BLUE, (self.n.x * squareSize, self.n.y * squareSize, squareSize, squareSize))
         for space in self.snake.spaces:
             pygame.draw.rect(screen, Color.YELLOW, (space.x * squareSize, space.y * squareSize, squareSize, squareSize))
         pygame.draw.rect(screen, Color.RED, (self.food.x * squareSize, self.food.y * squareSize, squareSize, squareSize))
