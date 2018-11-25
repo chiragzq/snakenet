@@ -2,13 +2,13 @@ import os
 import json
 
 def saveTrainingData(data):
-    fileData = loadTrainingData()
-    fileData.extend(data)
-    writeTrainingData(fileData)
+    if len(data) == 0:
+        return
+    writeTrainingData(data)
 
 def loadTrainingData():
     datadir = "/data"
-    if not os.path.exists(datadir):
+    if not os.path.exists(os.getcwd() + datadir):
         os.makedirs(datadir)
     files = os.listdir(os.getcwd() + datadir)
     data = []
@@ -23,8 +23,12 @@ def loadTrainingData():
 def writeTrainingData(data):
     datadir = "/data"
     filename = "data.txt"
-    if not os.path.exists(datadir):
+    if not os.path.exists(os.getcwd() + datadir):
         os.makedirs(datadir)
-    with open(os.getcwd() + datadir + "/" + filename, "w") as f:
-        json.dump(data, f, separators=(",", ":"))
+    with open(os.getcwd() + datadir + "/" + filename, "rb+") as f:
+        f.seek(-1, os.SEEK_END)
+        f.truncate()
+    s = "," + json.dumps(data, separators=(",", ":"))[1 :]
+    with open(os.getcwd() + datadir + "/" + filename, "a") as f:
+        f.write(s)
     

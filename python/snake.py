@@ -29,15 +29,15 @@ class Snake:
                 self.spaces.append(self.adjacentSquare(self.spaces[i - 1]))
     
     def step1(self, state, features):
-        #ndir = self.selectDirectionNet(features)
+        ndir = self.selectDirectionNet(features)
         if self.player == Player.HUMAN:
             self.stepDir = self.selectDirection()
-        #elif self.player == Player.NEURAL:
-            #self.stepDir = ndir
+        elif self.player == Player.NEURAL:
+            self.stepDir = ndir
         elif self.player == Player.AI:
             self.stepDir = self.selectDirectionAI(state)
         self.direction = self.stepDir
-        return (getNewSpace(self.spaces[0], self.direction),) #getNewSpace(self.spaces[0], ndir))
+        return (getNewSpace(self.spaces[0], self.direction), getNewSpace(self.spaces[0], ndir))
 
     def step2(self):
         if self.grow > 0:

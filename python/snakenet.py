@@ -8,8 +8,6 @@ class SnakeNet:
     BATCH_SIZE = 303
     initialLearningRate = 0.06
     netShape = [32, 3] #input: 4, output: 3
-    math = tf.math
-    graph = tf.Graph()
     optimizer = tf.keras.optimizers.SGD(initialLearningRate)
     model = tf.keras.models.Sequential()
     model.add(tf.keras.layers.Dense(netShape[0], activation="relu", input_shape=(4,)))
@@ -37,6 +35,7 @@ class SnakeNet:
         x[0][2] = data[2]
         x[0][3] = data[3]
         result = self.model.predict(x)
+        print(result)
         return self.bestDirection(result)
     
     def bestDirection(self, target):

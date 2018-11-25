@@ -45,7 +45,8 @@ class Snakegame:
     
     def draw(self, screen, squareSize):
         for space in self.snake.spaces:
-            pygame.draw.rect(screen, Color.YELLOW, (space.x * squareSize, space.y * squareSize, squareSize, squareSize))
+            if space.x >= 0 and space.x < self.gridWidth and space.y >= 0 and space.y < self.gridHeight:
+                pygame.draw.rect(screen, Color.YELLOW, (space.x * squareSize, space.y * squareSize, squareSize, squareSize))
         pygame.draw.rect(screen, Color.RED, (self.food.x * squareSize, self.food.y * squareSize, squareSize, squareSize))
     
     
