@@ -1,11 +1,12 @@
 import pygame
 import time
+import sys
 from button import Button
 from snakegame import Snakegame
 from snakenet import SnakeNet
 from snakeai import SnakeAI
 from util import Color, Player
-    
+
 WIDTH = 500
 HEIGHT = 500
 LOWER_MENU_HEIGHT = 100
@@ -13,7 +14,7 @@ GAMEWIDTH = 20
 GAMEHEIGHT = 20
 SQUARESIZE = WIDTH / GAMEWIDTH
 LINETHICKNESS = 1
-GAME_INTERVAL = 50
+GAME_INTERVAL = 75
 snakeNet = SnakeNet()
 snakeAI = SnakeAI()
 snakeGame = Snakegame(GAMEWIDTH, GAMEHEIGHT, Player.HUMAN, snakeNet, snakeAI)
@@ -32,8 +33,8 @@ def main():
     pygame.init()
     pygame.display.set_caption("Snake game")
     screen = pygame.display.set_mode((WIDTH, HEIGHT + LOWER_MENU_HEIGHT))
-    startGame(Player.HUMAN)
     snakeNet.loadData()
+    startGame(Player.HUMAN)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -65,8 +66,10 @@ def startGame(player):
         print("Starting game: Human")
     elif player == Player.NEURAL:
         print("Starting game: Neural")
-    else:
+    elif player == Player.AI:
         print("Starting game: AI")
+    else:
+        print("Starting data collection game")
     snakeGame = Snakegame(GAMEWIDTH, GAMEHEIGHT, player, snakeNet, snakeAI)
     active = True
 
@@ -99,4 +102,58 @@ def drawUI(screen):
 def drawGame(screen, snakeGame):
     snakeGame.draw(screen, SQUARESIZE)
 
-main()
+def startData():
+    global active
+    running = True
+    startGame(Player.DATA)
+    while running:
+        if active:
+            mainLoop(snakeGame)
+            if not snakeGame.alive:
+                stopGame()
+                startGame(Player.DATA)
+
+args = sys.argv[1:]
+mset = False
+mode = "None"
+print("")
+if len(args) == 0:
+    print("Error: please specify -m")
+    print("Use --help for more info")
+    exit()
+for i in range(0, len(args)):
+    if i == 0:
+        if not args[i][0] == "-":
+            print("Unexpected token: " + args[i])
+            exit()
+        else:
+            if args[i][1:] == "m":
+                mset = True
+            elif args[i][1:] == "-help":
+                print("Runs a snake game with a neural net and AI")
+                print("Usage: python3 main.py -m [normal|data]")
+                print("  -m               the mode of the game")
+                print("                   normal start it normally")
+                print("                   data starts it in data collection mode")
+                print("")
+                exit()
+            else:
+                print("Unknown option: " + args[i][1:])
+                exit()
+    if i == 1:
+        if not (args[i] == "normal" or args[i] == "data"):
+            print("Unkown mode: " + args[i])
+            exit()
+        else:
+            mode = args[i]
+    if i > 1:
+        print("Unexpected token: " + args[i])
+
+if mset and mode == "None":
+    print("Mode not specified")
+    exit()
+
+if mode == "normal":
+    main()
+else:
+    startData()

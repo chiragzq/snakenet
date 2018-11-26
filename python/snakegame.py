@@ -18,13 +18,13 @@ class Snakegame:
     def step1(self):
         self.state = generateState(self.snake.spaces, self.food)
         features = convertStateToFeatures(self.state)
+        self.oldDir = self.snake.direction
         square = self.snake.step1(self.state, features)
     
     def step2(self, gridWidth, gridHeight):
-        oldDir = self.snake.direction
         self.snake.step2()
-        target = generateTarget(oldDir, self.snake.direction)
-        if self.player == Player.HUMAN or self.player == Player.AI:
+        target = generateTarget(self.oldDir, self.snake.direction)
+        if self.player == Player.HUMAN or self.player == Player.AI or self.player == Player.DATA:
             if COLLECTDATA:
                 self.traindata.append((self.state, target))
 

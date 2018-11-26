@@ -29,6 +29,10 @@ class Snake:
                 self.spaces.append(self.adjacentSquare(self.spaces[i - 1]))
     
     def step1(self, state, features):
+        if self.player == Player.DATA:
+            self.direction = self.selectDirectionAI(state)
+            return
+        
         ndir = self.selectDirectionNet(features)
         if self.player == Player.HUMAN:
             self.stepDir = self.selectDirection()

@@ -25,10 +25,14 @@ def writeTrainingData(data):
     filename = "data.txt"
     if not os.path.exists(os.getcwd() + datadir):
         os.makedirs(datadir)
-    with open(os.getcwd() + datadir + "/" + filename, "rb+") as f:
-        f.seek(-1, os.SEEK_END)
-        f.truncate()
-    s = "," + json.dumps(data, separators=(",", ":"))[1 :]
-    with open(os.getcwd() + datadir + "/" + filename, "a") as f:
-        f.write(s)
+    if not os.path.exists(os.getcwd() + datadir + "/" + filename):
+        with open(os.getcwd() + datadir + "/" + filename, "w") as f:
+            json.dump(data, f, separators=(",", ":"))
+    else:
+        with open(os.getcwd() + datadir + "/" + filename, "rb+") as f:
+            f.seek(-1, os.SEEK_END)
+            f.truncate()
+        s = "," + json.dumps(data, separators=(",", ":"))[1 :]
+        with open(os.getcwd() + datadir + "/" + filename, "a") as f:
+            f.write(s)
     

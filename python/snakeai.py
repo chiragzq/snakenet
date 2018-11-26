@@ -1,5 +1,6 @@
 from util import getNewSpace, getCurrentDirection, Space
 from collections import deque
+from random import randint
 
 class SnakeAI:
     def selectDirection(self, spaces, food):
@@ -11,13 +12,20 @@ class SnakeAI:
         if len(bfs) == 0:
             leftBlocked = not self.valid(leftSpace, spaces)
             frontBlocked = not self.valid(frontSpace, spaces)
-            #rightBlocked = self.contains(rightSpace, spaces)
+            rightBlocked = not self.valid(rightSpace, spaces)
             if frontBlocked:
                 if leftBlocked:
                     return 2
-                return 0
+                if rightBlocked:
+                    return 0
+                return (0, 2)[randint(0, 1)]
             else:
-                return 1
+                if leftBlocked:
+                    return (1, 2)[randint(0, 1)]
+                elif rightBlocked:
+                    return (0, 1)[randint(0, 1)]
+                else:
+                    return (0, 1, 2)[randint(0, 2)]
         else:
             if leftSpace.equals(bfs[1]):
                 return 0

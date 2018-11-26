@@ -31,6 +31,7 @@ class Player:
     HUMAN = 0
     NEURAL = 1
     AI = 2
+    DATA = 3
 
 def getNewSpace(space, dir):
     offsets = [[0, -1], [1, 0], [0, 1], [-1, 0]]
@@ -132,7 +133,7 @@ def generateTarget(oldDir, newDir):
     target[0] = 1 if newDir == leftDir else 0
     target[1] = 1 if newDir == oldDir else 0
     target[2] = 1 if newDir == rightDir else 0
-    return target 
+    return target
 
 def getNeckDirection(spaces):
     if spaces[0].x < spaces[1].x: return RIGHT
@@ -147,4 +148,4 @@ def getCurrentDirection(spaces):
 def isUsefulSample(sample):
     if sample[1][0] > 0 or sample[1][2] > 0:
         return True
-    return randint(0, 100) < 20
+    return randint(0, 100) < 25

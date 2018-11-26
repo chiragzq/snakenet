@@ -4,9 +4,9 @@ import datautil
 from util import convertStateToFeatures, isUsefulSample
 
 class SnakeNet:
-    ITERATIONS = 500
-    BATCH_SIZE = 303
-    initialLearningRate = 0.06
+    ITERATIONS = 100
+    BATCH_SIZE = 600
+    initialLearningRate = 0.5
     netShape = [32, 3] #input: 4, output: 3
     optimizer = tf.keras.optimizers.SGD(initialLearningRate)
     model = tf.keras.models.Sequential()
@@ -35,7 +35,6 @@ class SnakeNet:
         x[0][2] = data[2]
         x[0][3] = data[3]
         result = self.model.predict(x)
-        print(result)
         return self.bestDirection(result)
     
     def bestDirection(self, target):
@@ -45,6 +44,7 @@ class SnakeNet:
         datautil.saveTrainingData(data)
 
     def loadData(self):
+        print("Loading data...")
         data = datautil.loadTrainingData()
         count = 0
         for sample in data:
